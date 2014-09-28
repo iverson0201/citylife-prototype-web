@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:b="http://www.springframework.org/schema/beans"
+             xmlns:p="http://www.springframework.org/schema/p"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+            http://www.springframework.org/schema/security
+            http://www.springframework.org/schema/security/spring-security-3.2.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+
+    <http pattern="/api/v1/user/login" security="none"></http>
+<!--     <http pattern="/api/v1/user/llq" security="none"></http> -->
+<!-- 	<http pattern="/customer/*/*/*" security="none"></http> -->
+<!-- 	<http pattern="/room/*/*" security="none"></http> -->
+<!-- 	<http pattern="/appointment"  security="none"></http> -->
+    <http create-session="stateless"
+          entry-point-ref="authenticationEntryPoint"
+          authentication-manager-ref="authenticationManager"
+          use-expressions="true">
+
+		
+        <intercept-url pattern="/api/v1/admin/**" access="hasRole('ROLE_ADMIN')" />
+        <intercept-url pattern="/api/v1/user/reg" method="POST" access="hasAnyRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/api/v1/user" method="GET" access="hasAnyRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/api/v1/user/*" method="PUT" access="hasAnyRole('ROLE_REG','ROLE_ADMIN')"/>
+        <intercept-url pattern="/api/v1/user/*" method="GET" access="hasAnyRole('ROLE_REG','ROLE_ADMIN')"/>
+		<intercept-url pattern="/api/v1/user/*" method="DELETE" access="hasAnyRole('ROLE_ADMIN')"/>
+<!-- 		<intercept-url pattern="/api/v1/user/llq" method="POST" access="hasAnyRole('ROLE_REG','ROLE_ADMIN')"/> -->
+        
+        <custom-filter ref="allSecurity" before="BASIC_AUTH_FILTER" />
+        <custom-filter ref="afterSecurityFilter" after="BASIC_AUTH_FILTER" />
+        <access-denied-handler ref="accessDeniedHandler" />
+    </http>
+
+    <beans:bean id="allSecurity" class="com.citylife.trackup.backend.auth.AllSecurityFilter">
+        <beans:constructor-arg name="authenticationManager" ref="authenticationManager" />
+    </beans:bean>
+
+    <beans:bean id="authenticationEntryPoint" class="com.citylife.trackup.backend.auth.CustomAuthenticationEntryPoint">
+        <beans:property name="realmName" value="athui.com" />
+    </beans:bean>
+
+    <beans:bean id="afterSecurityFilter" class="com.citylife.trackup.backend.auth.AfterSecurityFilter">
+        <beans:constructor-arg name="authenticationManager" ref="authenticationManager" />
+    </beans:bean>
+
+    <beans:bean id="restAuthenticationProvider" class="com.citylife.trackup.backend.auth.RestAuthenticationProvider">
+    </beans:bean>
+
+    <beans:bean id="accessDeniedHandler" class="com.citylife.trackup.backend.auth.CustomAccessDeniedHandler">
+    </beans:bean>
+
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider ref="restAuthenticationProvider">
+        </authentication-provider>
+    </authentication-manager>
+</b:beans>
