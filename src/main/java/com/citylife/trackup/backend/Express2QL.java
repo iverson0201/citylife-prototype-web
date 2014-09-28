@@ -11,7 +11,11 @@ import cz.jirutka.rsql.parser.model.ComparisonExpression;
 import cz.jirutka.rsql.parser.model.Expression;
 import cz.jirutka.rsql.parser.model.LogicalExpression;
 
-
+/**
+ * @author 作者 E-mail:xujw0201@gmail.com
+ * @version 创建时间：2014年9月19日 下午3:22:11
+ * 
+ */
 public class Express2QL {
 
     public static Query getQL(Expression expression) {

@@ -11,7 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-
+/**
+ * @author 作者 E-mail:xujw0201@gmail.com
+ * 
+ */
 public class CustomAuthenticationEntryPoint extends
         BasicAuthenticationEntryPoint {
 

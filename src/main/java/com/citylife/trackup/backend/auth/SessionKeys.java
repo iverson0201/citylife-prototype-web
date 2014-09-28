@@ -1,5 +1,9 @@
 package com.citylife.trackup.backend.auth;
 
+/**
+ * @author 作者 E-mail:xujw0201@gmail.com
+ * 
+ */
 public enum SessionKeys {
 	TOKEN ("X-SESSION"),
 	APP_CODE ("X-APPCODE"),

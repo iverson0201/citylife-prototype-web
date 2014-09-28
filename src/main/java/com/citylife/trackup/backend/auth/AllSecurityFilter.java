@@ -15,7 +15,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.filter.GenericFilterBean;
 
-
+/**
+ * @author 作者 E-mail:xujw0201@gmail.com
+ * 
+ */
 public class AllSecurityFilter extends GenericFilterBean {
 
     @SuppressWarnings("unused")

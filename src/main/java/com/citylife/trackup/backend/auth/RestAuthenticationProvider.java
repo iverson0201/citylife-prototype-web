@@ -14,7 +14,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import com.citylife.trackup.backend.domain.user.User;
 import com.citylife.trackup.backend.service.UserService;
 
-
+/**
+ * @author 作者 E-mail:xujw0201@gmail.com
+ * 
+ */
 public class RestAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired

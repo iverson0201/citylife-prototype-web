@@ -12,7 +12,10 @@ import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 
-
+/**
+ * @author 作者 E-mail:xujw0201@gmail.com
+ * 
+ */
 public class CustomAccessDeniedHandler implements org.springframework.security.web.access.AccessDeniedHandler {
 
     public CustomAccessDeniedHandler() {

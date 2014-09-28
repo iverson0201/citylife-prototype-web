@@ -6,7 +6,10 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-
+/**
+ * @author 作者 E-mail:xujw0201@gmail.com
+ * 
+ */
 public class Encrypt {
 
     public static String encrypt(String msg) {

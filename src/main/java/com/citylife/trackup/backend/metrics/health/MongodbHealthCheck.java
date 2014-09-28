@@ -9,11 +9,9 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
 /**
-
- * User: Administrator
- * Date: 13-6-20
- * Time: 下午1:47
- * To change this template use File | Settings | File Templates.
+ * @author 作者 E-mail:xujw0201@gmail.com
+ * @version 创建时间：2014年9月18日 下午5:23:49
+ * 
  */
 @Component
 public class MongodbHealthCheck extends HealthCheck{

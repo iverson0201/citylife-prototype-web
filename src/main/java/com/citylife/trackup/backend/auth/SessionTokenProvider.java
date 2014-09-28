@@ -4,6 +4,10 @@ import com.google.common.collect.ImmutableMap;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author 作者 E-mail:xujw0201@gmail.com
+ * 
+ */
 public class SessionTokenProvider implements ISessionTokenProvider {
 
     TimerTask task = new TimerTask() {

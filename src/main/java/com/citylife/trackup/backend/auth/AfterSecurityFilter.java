@@ -18,11 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
-
- * User: Administrator
- * Date: 13-6-5
- * Time: 上午11:16
- * To change this template use File | Settings | File Templates.
+ * @author 作者 E-mail:xujw0201@gmail.com
+ * 
  */
 public class AfterSecurityFilter extends GenericFilterBean {
     private AuthenticationManager authenticationManager;

@@ -2,6 +2,10 @@ package com.citylife.trackup.backend.auth;
 
 import org.springframework.security.core.AuthenticationException;
 
+/**
+ * @author 作者 E-mail:xujw0201@gmail.com
+ * 
+ */
 @SuppressWarnings("serial")
 public class RestAuthenticationException extends AuthenticationException {
 

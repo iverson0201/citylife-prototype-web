@@ -6,6 +6,11 @@ import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 
+/**
+ * @author 作者 E-mail:xujw0201@gmail.com
+ * @version 创建时间：2014年9月19日 下午5:44:12
+ * 
+ */
 public interface BaseDao<T,PK extends Serializable> {
 
     public void insert2Mongo(T entity);

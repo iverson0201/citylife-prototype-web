@@ -24,7 +24,11 @@ import com.codahale.metrics.annotation.ExceptionMetered;
 
 import cz.jirutka.rsql.parser.ParseException;
 
-
+/**
+ * @author 作者 E-mail:xujw0201@gmail.com
+ * @version 创建时间：2014年9月19日 下午4:35:18
+ * 
+ */
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 

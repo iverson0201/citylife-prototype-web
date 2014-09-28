@@ -5,7 +5,11 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-
+/**
+ * @author 作者 E-mail:xujw0201@gmail.com
+ * @version 创建时间：2014年9月18日 下午5:23:49
+ * 
+ */
 @SuppressWarnings("serial")
 public class RestToken extends UsernamePasswordAuthenticationToken {
 
