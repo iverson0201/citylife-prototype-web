@@ -5,6 +5,7 @@ package com.citylife.trackup.backend.dto;
  */
 public class SubjectDto {
 
+	private String id;
 	/** 专题名称 */
 	private String title;
 	/** 专题内容 */
@@ -36,6 +37,12 @@ public class SubjectDto {
 	}
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 }

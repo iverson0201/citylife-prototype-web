@@ -16,6 +16,7 @@ import com.citylife.trackup.backend.common.Utils;
 import com.citylife.trackup.backend.common.mapper.BeanMapper;
 import com.citylife.trackup.backend.common.web.MediaTypes;
 import com.citylife.trackup.backend.domain.result.Result;
+import com.citylife.trackup.backend.domain.subject.SpecialReply;
 import com.citylife.trackup.backend.domain.subject.Subject;
 import com.citylife.trackup.backend.dto.SubjectDto;
 import com.citylife.trackup.backend.service.SubjectService;
@@ -68,7 +69,7 @@ public class SubjectController {
 	 * @return
 	 */
 	@RequestMapping(value = "/{publishId}",method = RequestMethod.PUT,consumes = MediaTypes.JSON)
-	public Result<SubjectDto> update(@PathVariable Subject subject){
+	public Result<SubjectDto> update(@RequestBody Subject subject){
 		Subject subjectRet = subjectService.updateSubject(subject.getId(),subject);
 		Result<SubjectDto> result = transformation(subjectRet);
 	    return result;
@@ -94,5 +95,10 @@ public class SubjectController {
 		Result<SubjectDto> result = new Result<SubjectDto>();
 		result.setObj(subjectDto);
 		return result;
+	}
+	
+	public Result<SubjectDto> replySubject(@RequestBody SpecialReply specialReply){
+		
+		return null;
 	}
 }
