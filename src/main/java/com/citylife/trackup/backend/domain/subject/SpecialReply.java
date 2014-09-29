@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.citylife.trackup.backend.domain.person.Backer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class SpecialReply {
 
+	private String Id;
 	private String replyContent;
 	private String[] images;
 	private Backer backer;
@@ -44,6 +46,12 @@ public class SpecialReply {
 	}
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
+	}
+	public String getId() {
+		return Id;
+	}
+	public void setId(String id) {
+		Id = id;
 	}
 	
 	

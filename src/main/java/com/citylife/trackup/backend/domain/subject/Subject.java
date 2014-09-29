@@ -1,12 +1,18 @@
 package com.citylife.trackup.backend.domain.subject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.citylife.trackup.backend.domain.Base;
+import com.citylife.trackup.backend.domain.person.Pubulisher;
 
 /**
  * @author 作者 E-mail:xujw0201@gmail.com
  * @version 创建时间：2014年9月24日 上午11:44:45
+ * 
+ * 专题
  */
 public class Subject extends Base {
 
@@ -16,9 +22,20 @@ public class Subject extends Base {
 	private String content;
 	/** 图片 */
 	private String[] images;
-	/** 用户Id */
-	private String userId;
+	/** 发布人 */
+	private Pubulisher pubulisher;
 	
+	private List<SpecialReply> specialReplies = new ArrayList<SpecialReply>();
+	
+	
+	
+	public Subject() {
+	}
+	
+	public Subject(List<SpecialReply> specialReplies) {
+		this.specialReplies = specialReplies;
+	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -37,15 +54,21 @@ public class Subject extends Base {
 	public void setImages(String[] images) {
 		this.images = images;
 	}
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
+	}
+	public Pubulisher getPubulisher() {
+		return pubulisher;
+	}
+	public void setPubulisher(Pubulisher pubulisher) {
+		this.pubulisher = pubulisher;
+	}
+	public List<SpecialReply> getSpecialReplies() {
+		return specialReplies;
+	}
+	public void setSpecialReplies(List<SpecialReply> specialReplies) {
+		this.specialReplies = specialReplies;
 	}
 	
 	
