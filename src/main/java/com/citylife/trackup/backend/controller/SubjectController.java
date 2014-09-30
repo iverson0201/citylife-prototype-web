@@ -101,51 +101,6 @@ public class SubjectController {
 		result.setObj(subjectDto);
 		return result;
 	}
-//	/**
-//	 * 回复专题
-//	 * @param specialReply
-//	 * @return
-//	 */
-//	@RequestMapping(value = "/{subjectId}/comment",method = RequestMethod.PUT,consumes = MediaTypes.JSON)
-//	public Result<SubjectDto> replySubject(@RequestBody SpecialReplyDto specialReplyDto){
-//		Subject subject = subjectService.findSubejct(specialReplyDto.getSubjectId());
-//		SpecialReply specialReply = specialReplyDto.getSpecialReply();
-//		specialReply.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-//		specialReply.setCreatedAt(new Date());
-//		subject.getSpecialReplies().add(specialReply);
-//		subject.setUpdatedAt(new Date());
-//		Subject subjectRet = subjectService.updateSubject(specialReplyDto.getSubjectId(), subject);
-//		Result<SubjectDto> result = transformation(subjectRet);
-//	    return result;
-//	}
-//	/**
-//	 * 删除回复
-//	 * @param subjectId
-//	 * @param specialReplyId
-//	 * @return
-//	 */
-//	@RequestMapping(value = "/{subjectId}/{specialReplyId}",method = RequestMethod.DELETE,consumes = MediaTypes.JSON)
-//	public Result<SubjectDto> deleteReply(@PathVariable String subjectId,@PathVariable String specialReplyId){
-//		Subject subjectRet = subjectService.findSubejct(subjectId);
-//		List<SpecialReply> specialReplies = subjectRet.getSpecialReplies();
-//		if(specialReplies == null || specialReplies.size() == 0){
-//			throw new RestException("您没有回复专题：" + subjectRet.getTitle() + "，不能删除。");
-//		}
-//		boolean flag = false;
-//		for (int i = 0; i < specialReplies.size() && !flag; i++) {
-//			if(specialReplyId.intern() == specialReplies.get(i).getId().intern()){
-//				specialReplies.remove(i);
-//				flag = true;
-//			}
-//		}
-//		if(flag){
-//			subjectRet.setSpecialReplies(specialReplies);
-//			subjectRet.setUpdatedAt(new Date());
-//			subjectService.updateSubject(subjectId, subjectRet);
-//		}
-//		Result<SubjectDto> result = transformation(subjectRet);
-//	    return result;
-//	}
 	/**
 	 * 回复专题
 	 * @param specialReply
