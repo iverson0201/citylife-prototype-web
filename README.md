@@ -1,3 +1,4 @@
+技能介绍：
 1、rest架构
 2、逻辑控制 spring4 mvc
 3、自定义Exception类型，并返回客户端友好的错误信息
