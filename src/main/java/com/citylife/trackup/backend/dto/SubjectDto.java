@@ -1,10 +1,6 @@
 package com.citylife.trackup.backend.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.citylife.trackup.backend.domain.person.Pubulisher;
-import com.citylife.trackup.backend.domain.subject.SpecialReply;
 
 /**
  * @author 作者 E-mail:xujw0201@gmail.com
@@ -21,8 +17,6 @@ public class SubjectDto {
 	private String[] images;
 	/** 发布人 */
 	private Pubulisher pubulisher;
-	
-	private List<SpecialReply> specialReplies = new ArrayList<SpecialReply>();
 	
 	public String getTitle() {
 		return title;
@@ -54,11 +48,4 @@ public class SubjectDto {
 	public void setPubulisher(Pubulisher pubulisher) {
 		this.pubulisher = pubulisher;
 	}
-	public List<SpecialReply> getSpecialReplies() {
-		return specialReplies;
-	}
-	public void setSpecialReplies(List<SpecialReply> specialReplies) {
-		this.specialReplies = specialReplies;
-	}
-	
 }

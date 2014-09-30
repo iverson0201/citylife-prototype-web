@@ -1,8 +1,5 @@
 package com.citylife.trackup.backend.domain.subject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.citylife.trackup.backend.domain.Base;
@@ -25,17 +22,10 @@ public class Subject extends Base {
 	/** 发布人 */
 	private Pubulisher pubulisher;
 	
-	private List<SpecialReply> specialReplies = new ArrayList<SpecialReply>();
-	
-	
 	
 	public Subject() {
 	}
 	
-	public Subject(List<SpecialReply> specialReplies) {
-		this.specialReplies = specialReplies;
-	}
-
 	public String getTitle() {
 		return title;
 	}
@@ -64,12 +54,5 @@ public class Subject extends Base {
 	public void setPubulisher(Pubulisher pubulisher) {
 		this.pubulisher = pubulisher;
 	}
-	public List<SpecialReply> getSpecialReplies() {
-		return specialReplies;
-	}
-	public void setSpecialReplies(List<SpecialReply> specialReplies) {
-		this.specialReplies = specialReplies;
-	}
-	
 	
 }

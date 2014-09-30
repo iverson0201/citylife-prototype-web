@@ -29,6 +29,8 @@ import com.qiniu.api.rs.PutPolicy;
 /**
  * @author 作者 E-mail:xujw0201@gmail.com
  * @version 创建时间：2014年9月25日 下午4:59:41
+ * 
+ * 七牛云存储api
  */
 @RestController
 @RequestMapping(value = "/api/v1/qiniu")
@@ -66,9 +68,9 @@ public class QiniuController {
 			uptoken = putPolicy.token(mac);
 			qiniuService.save(qiniu);
 		} catch (JSONException e) {
-			new RestException("获取uptoken错误，JSONException");
+			throw new RestException("获取uptoken错误，JSONException");
 		} catch (AuthException e) {
-			new RestException("获取uptoken错误，AuthException");
+			throw new RestException("获取uptoken错误，AuthException");
 		}
 		return "{\"code\" : 1,\"uptoken\" : " + uptoken + "}";
 	}
@@ -105,9 +107,9 @@ public class QiniuController {
 				qiniuService.save(qiniu);
 			}
 		} catch (JSONException e) {
-			new RestException("获取uptoken错误，JSONException");
+			throw new RestException("获取uptoken错误，JSONException");
 		} catch (AuthException e) {
-			new RestException("获取uptoken错误，AuthException");
+			throw new RestException("获取uptoken错误，AuthException");
 		}
 		return new ResultDto(1,uptoken);
 	}

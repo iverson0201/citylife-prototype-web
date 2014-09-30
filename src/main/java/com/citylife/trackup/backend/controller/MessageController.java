@@ -31,7 +31,7 @@ public class MessageController {
 		int randomNumber = Utils.randomNumber();
 		Boolean flag = messageService.sendShortMessage(phone,randomNumber);
 		if(!flag){
-			new RestException("短信发送失败。");
+			throw new RestException("短信发送失败。");
 		}
 		return "{\"code\" : 1,\"randomNumber\" : " + randomNumber + "}";
 	}

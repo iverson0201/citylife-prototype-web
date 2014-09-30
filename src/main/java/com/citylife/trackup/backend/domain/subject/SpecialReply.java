@@ -1,11 +1,7 @@
 package com.citylife.trackup.backend.domain.subject;
 
-import java.util.Date;
-
-import org.springframework.data.mongodb.core.mapping.Field;
-
+import com.citylife.trackup.backend.domain.Base;
 import com.citylife.trackup.backend.domain.person.Backer;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author 作者 E-mail:xujw0201@gmail.com
@@ -13,15 +9,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * 
  * 专题回复
  */
-public class SpecialReply {
+public class SpecialReply extends Base{
 
-	private String Id;
 	private String replyContent;
 	private String[] images;
 	private Backer backer;
-	@JsonProperty("created_at")
-    @Field("created_at")
-    private Date createdAt;
+	private String subjectId;
 	
 	public String getReplyContent() {
 		return replyContent;
@@ -41,17 +34,11 @@ public class SpecialReply {
 	public void setBacker(Backer backer) {
 		this.backer = backer;
 	}
-	public Date getCreatedAt() {
-		return createdAt;
+	public String getSubjectId() {
+		return subjectId;
 	}
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-	public String getId() {
-		return Id;
-	}
-	public void setId(String id) {
-		Id = id;
+	public void setSubjectId(String subjectId) {
+		this.subjectId = subjectId;
 	}
 	
 	

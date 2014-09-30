@@ -1,8 +1,6 @@
 package com.citylife.trackup.backend.controller;
 
 import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -20,9 +18,9 @@ import com.citylife.trackup.backend.common.web.MediaTypes;
 import com.citylife.trackup.backend.domain.result.Result;
 import com.citylife.trackup.backend.domain.subject.SpecialReply;
 import com.citylife.trackup.backend.domain.subject.Subject;
-import com.citylife.trackup.backend.dto.SpecialReplyDto;
 import com.citylife.trackup.backend.dto.SubjectDto;
 import com.citylife.trackup.backend.exception.RestException;
+import com.citylife.trackup.backend.service.SpecialReplyService;
 import com.citylife.trackup.backend.service.SubjectService;
 
 /**
@@ -37,6 +35,9 @@ public class SubjectController {
 	
 	@Autowired
 	private SubjectService subjectService;
+	
+	@Autowired
+	private SpecialReplyService specialReplyService;
 
 	/**
 	 * 发布专题
@@ -100,49 +101,77 @@ public class SubjectController {
 		result.setObj(subjectDto);
 		return result;
 	}
+//	/**
+//	 * 回复专题
+//	 * @param specialReply
+//	 * @return
+//	 */
+//	@RequestMapping(value = "/{subjectId}/comment",method = RequestMethod.PUT,consumes = MediaTypes.JSON)
+//	public Result<SubjectDto> replySubject(@RequestBody SpecialReplyDto specialReplyDto){
+//		Subject subject = subjectService.findSubejct(specialReplyDto.getSubjectId());
+//		SpecialReply specialReply = specialReplyDto.getSpecialReply();
+//		specialReply.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+//		specialReply.setCreatedAt(new Date());
+//		subject.getSpecialReplies().add(specialReply);
+//		subject.setUpdatedAt(new Date());
+//		Subject subjectRet = subjectService.updateSubject(specialReplyDto.getSubjectId(), subject);
+//		Result<SubjectDto> result = transformation(subjectRet);
+//	    return result;
+//	}
+//	/**
+//	 * 删除回复
+//	 * @param subjectId
+//	 * @param specialReplyId
+//	 * @return
+//	 */
+//	@RequestMapping(value = "/{subjectId}/{specialReplyId}",method = RequestMethod.DELETE,consumes = MediaTypes.JSON)
+//	public Result<SubjectDto> deleteReply(@PathVariable String subjectId,@PathVariable String specialReplyId){
+//		Subject subjectRet = subjectService.findSubejct(subjectId);
+//		List<SpecialReply> specialReplies = subjectRet.getSpecialReplies();
+//		if(specialReplies == null || specialReplies.size() == 0){
+//			throw new RestException("您没有回复专题：" + subjectRet.getTitle() + "，不能删除。");
+//		}
+//		boolean flag = false;
+//		for (int i = 0; i < specialReplies.size() && !flag; i++) {
+//			if(specialReplyId.intern() == specialReplies.get(i).getId().intern()){
+//				specialReplies.remove(i);
+//				flag = true;
+//			}
+//		}
+//		if(flag){
+//			subjectRet.setSpecialReplies(specialReplies);
+//			subjectRet.setUpdatedAt(new Date());
+//			subjectService.updateSubject(subjectId, subjectRet);
+//		}
+//		Result<SubjectDto> result = transformation(subjectRet);
+//	    return result;
+//	}
 	/**
 	 * 回复专题
 	 * @param specialReply
 	 * @return
 	 */
-	@RequestMapping(value = "/{subjectId}/comment",method = RequestMethod.PUT,consumes = MediaTypes.JSON)
-	public Result<SubjectDto> replySubject(@RequestBody SpecialReplyDto specialReplyDto){
-		Subject subject = subjectService.findSubejct(specialReplyDto.getSubjectId());
-		SpecialReply specialReply = specialReplyDto.getSpecialReply();
-		specialReply.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-		specialReply.setCreatedAt(new Date());
-		subject.getSpecialReplies().add(specialReply);
-		subject.setUpdatedAt(new Date());
-		Subject subjectRet = subjectService.updateSubject(specialReplyDto.getSubjectId(), subject);
-		Result<SubjectDto> result = transformation(subjectRet);
-	    return result;
+	@RequestMapping(value = "/{subjectId}/comment",method = RequestMethod.POST,consumes = MediaTypes.JSON)
+	public SpecialReply reply(@RequestBody SpecialReply specialReply,@PathVariable String subjectId){
+		Date date = new Date();
+		specialReply.setCreatedAt(date);
+		specialReply.setUpdatedAt(date);
+		specialReply.setSubjectId(subjectId);
+		specialReplyService.save(specialReply);
+	    return specialReply;
 	}
 	/**
 	 * 删除回复
-	 * @param subjectId
 	 * @param specialReplyId
 	 * @return
 	 */
-	@RequestMapping(value = "/{subjectId}/{specialReplyId}",method = RequestMethod.DELETE,consumes = MediaTypes.JSON)
-	public Result<SubjectDto> deleteReply(@PathVariable String subjectId,@PathVariable String specialReplyId){
-		Subject subjectRet = subjectService.findSubejct(subjectId);
-		List<SpecialReply> specialReplies = subjectRet.getSpecialReplies();
-		if(specialReplies == null || specialReplies.size() == 0){
-			throw new RestException("您没有回复专题：" + subjectRet.getTitle() + "，不能删除。");
-		}
-		boolean flag = false;
-		for (int i = 0; i < specialReplies.size() && !flag; i++) {
-			if(specialReplyId.intern() == specialReplies.get(i).getId().intern()){
-				specialReplies.remove(i);
-				flag = true;
-			}
-		}
+	@RequestMapping(value = "/delete/replay/{specialReplyId}")
+	public String removeReply(@PathVariable String specialReplyId){
+		specialReplyService.deleteReply(specialReplyId);
+		boolean flag = specialReplyService.findReply(specialReplyId);
 		if(flag){
-			subjectRet.setSpecialReplies(specialReplies);
-			subjectRet.setUpdatedAt(new Date());
-			subjectService.updateSubject(subjectId, subjectRet);
+			throw new RestException(specialReplyId + " 不存在.");
 		}
-		Result<SubjectDto> result = transformation(subjectRet);
-	    return result;
+		return "{\"code\" : 1}";
 	}
 }
