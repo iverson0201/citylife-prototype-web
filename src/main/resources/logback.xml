@@ -23,7 +23,7 @@
 	</appender>
 
 	<!-- project default level -->
-	<logger name="com.citylife.trackup.backend" level="INFO" />
+	<logger name="com.citylife.backend" level="INFO" />
 
 	<root level="INFO">
 		<appender-ref ref="console" />

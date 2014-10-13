@@ -37,22 +37,22 @@
         <access-denied-handler ref="accessDeniedHandler" />
     </http>
 
-    <beans:bean id="allSecurity" class="com.citylife.trackup.backend.auth.AllSecurityFilter">
+    <beans:bean id="allSecurity" class="com.citylife.backend.auth.AllSecurityFilter">
         <beans:constructor-arg name="authenticationManager" ref="authenticationManager" />
     </beans:bean>
 
-    <beans:bean id="authenticationEntryPoint" class="com.citylife.trackup.backend.auth.CustomAuthenticationEntryPoint">
+    <beans:bean id="authenticationEntryPoint" class="com.citylife.auth.CustomAuthenticationEntryPoint">
         <beans:property name="realmName" value="athui.com" />
     </beans:bean>
 
-    <beans:bean id="afterSecurityFilter" class="com.citylife.trackup.backend.auth.AfterSecurityFilter">
+    <beans:bean id="afterSecurityFilter" class="com.citylife.backend.auth.AfterSecurityFilter">
         <beans:constructor-arg name="authenticationManager" ref="authenticationManager" />
     </beans:bean>
 
-    <beans:bean id="restAuthenticationProvider" class="com.citylife.trackup.backend.auth.RestAuthenticationProvider">
+    <beans:bean id="restAuthenticationProvider" class="com.citylife.backend.auth.RestAuthenticationProvider">
     </beans:bean>
 
-    <beans:bean id="accessDeniedHandler" class="com.citylife.trackup.backend.auth.CustomAccessDeniedHandler">
+    <beans:bean id="accessDeniedHandler" class="com.citylife.backend.auth.CustomAccessDeniedHandler">
     </beans:bean>
 
     <authentication-manager alias="authenticationManager">

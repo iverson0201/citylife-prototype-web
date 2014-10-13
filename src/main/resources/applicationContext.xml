@@ -17,7 +17,7 @@
         http://www.springframework.org/schema/util/spring-util.xsd">
 
     <mvc:annotation-driven/>
-    <context:component-scan base-package="com.citylife.trackup.backend"/>
+    <context:component-scan base-package="com.citylife.backend"/>
 
     <bean id="defalutViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/views/"/>
@@ -64,7 +64,7 @@
         <property name="writeResultChecking" value="EXCEPTION"/>
     </bean>
 
-    <bean id="setup" class="com.citylife.trackup.backend.service.SetupEnv">
+    <bean id="setup" class="com.citylife.backend.service.SetupEnv">
     </bean>
 
     <!-- enable autowire -->
