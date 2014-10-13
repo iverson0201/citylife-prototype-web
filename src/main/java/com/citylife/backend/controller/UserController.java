@@ -30,9 +30,8 @@ import com.citylife.backend.domain.user.ThirdUser;
 import com.citylife.backend.domain.user.User;
 import com.citylife.backend.dto.ThirdUserDto;
 import com.citylife.backend.dto.UserDto;
-import com.citylife.backend.exception.ExistException;
-import com.citylife.backend.exception.NotFoundException;
 import com.citylife.backend.exception.RestException;
+import com.citylife.backend.exception.NotFoundException;
 import com.citylife.backend.service.SetupEnv;
 import com.citylife.backend.service.UserService;
 import com.google.common.base.Strings;
@@ -67,7 +66,7 @@ class UserController {
             throw new IllegalArgumentException(Utils.parseErrors(results.getFieldErrors()));
         }
         if (userService.findByPhoneNum(user.getTel()) != null) {
-            throw new ExistException("用户手机号已存在");
+            throw new RestException("用户手机号已存在");
         }
         setUserDate(user);
         userService.insert(user);
@@ -122,7 +121,7 @@ class UserController {
     	if(user == null){
     		String message = "用户不存在(id:" + userId + ")";
 			logger.warn(message);
-			throw new RestException(HttpStatus.NOT_FOUND,message);
+			throw new RestException(message);
     	}
     	// 使用Dozer转换DTO类，并补充Dozer不能自动绑定的属性
 		Result<UserDto> result = transformation(user);
@@ -151,7 +150,7 @@ class UserController {
     	if(user.getTel() != null){
     		User u = userService.findByPhoneNum(user.getTel());
     		if(u != null && user.getTel().intern() == u.getTel().intern()){
-    			throw new ExistException("该手机号已存在，不能绑定QQ或是微信。");
+    			throw new RestException("该手机号已存在，不能绑定QQ或是微信。");
     		}
     	}
     	User userRet = userService.update(user.getId(), user);
@@ -332,26 +331,26 @@ class UserController {
     public Result<UserDto> binding(@PathVariable String userId,@PathVariable Integer type,@PathVariable String thirdId){
     	User userRet = userService.findOne(userId);
     	if(userRet == null){
-    		throw new ExistException("账号不存在。");
+    		throw new RestException("账号不存在。");
     	}
     	List<ThirdUser> thirdUsers = userRet.getThirdUsers();
     	//QQ或是微信绑定手机号
     	if(type == 0 && thirdId != null){
     		User u = userService.findByPhoneNum(thirdId);
     		if(u != null && thirdId.intern() == u.getTel().intern()){
-    			throw new ExistException("该手机号已存在，不能绑定QQ或是微信。");
+    			throw new RestException("该手机号已存在，不能绑定QQ或是微信。");
     		}
     		userRet.setTel(thirdId);
     	}else if(type > 0 && thirdId != null){
     		if(thirdUsers == null){
-    			throw new ExistException("绑定失败。");
+    			throw new RestException("绑定失败。");
     		}
     		for(int i = 0 ; i <= thirdUsers.size()-1; i++){
     			if(thirdUsers.get(i).getThirdType() == type){
-    				throw new ExistException("该账号已绑定" + userRet.typeStr(type) + "，不能绑定多个。");
+    				throw new RestException("该账号已绑定" + userRet.typeStr(type) + "，不能绑定多个。");
     			}
     			if(thirdUsers.get(i).getThirdId().intern() == thirdId.intern()){
-    				throw new ExistException("该账号已绑定，不能重复绑定。");
+    				throw new RestException("该账号已绑定，不能重复绑定。");
     			}
     		}
     		ThirdUser thirdUser = new ThirdUser(thirdId,type);
@@ -372,14 +371,14 @@ class UserController {
     public Result<UserDto> unbinding(@PathVariable String userId,@PathVariable Integer type,@PathVariable String thirdId){
     	User userRet = userService.findOne(userId);
     	if(userRet == null){
-    		throw new ExistException("账号不存在。");
+    		throw new RestException("账号不存在。");
     	}
     	List<ThirdUser> thirdUsers = userRet.getThirdUsers();
     	if(thirdUsers == null || type <= 0 || thirdId == null){
-    		throw new ExistException("解除绑定失败。");
+    		throw new RestException("解除绑定失败。");
     	}
     	if(thirdUsers.size() == 1){
-    		throw new ExistException("不能解除绑定。");
+    		throw new RestException("不能解除绑定。");
     	}
     	for(int i = 0 ; i <= thirdUsers.size()-1; i++){
     		if(thirdUsers.get(i).getThirdId().intern() == thirdId.intern()){

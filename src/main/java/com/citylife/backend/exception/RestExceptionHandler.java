@@ -36,7 +36,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             OperateFailedException.class,
             NotAuthException.class,
             ParseException.class,
-            ExistException.class
+            RestException.class
     })
     public ResponseEntity<Object> exceptionHandler(Exception ex, WebRequest request) {
 
@@ -71,9 +71,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         } else if (ex instanceof ParseException) {
             HttpStatus status = HttpStatus.BAD_REQUEST;
             return handleException((ParseException) ex, headers, status, request);
-        } else if (ex instanceof ExistException) {
+        } else if (ex instanceof RestException) {
             HttpStatus status = HttpStatus.BAD_REQUEST;
-            return handleException((ExistException) ex, headers, status, request);
+            return handleException((RestException) ex, headers, status, request);
         } else {
             logger.warn("Unknown exception type: " + ex.getClass().getName());
             HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
