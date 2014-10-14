@@ -17,8 +17,11 @@ import com.citylife.backend.common.mapper.BeanMapper;
 import com.citylife.backend.common.web.MediaTypes;
 import com.citylife.backend.domain.result.Result;
 import com.citylife.backend.domain.topic.Topic;
+import com.citylife.backend.domain.topic.TopicReply;
 import com.citylife.backend.dto.TopicDto;
+import com.citylife.backend.dto.TopicReplyDto;
 import com.citylife.backend.exception.RestException;
+import com.citylife.backend.service.TopicReplyService;
 import com.citylife.backend.service.TopicService;
 
 /**
@@ -31,6 +34,8 @@ public class TopicController {
 
 	@Autowired
 	private TopicService topicService;
+	@Autowired
+	private TopicReplyService topicReplyService;
 	/**
 	 * 发布话题
 	 * @param topic
@@ -85,6 +90,44 @@ public class TopicController {
 		TopicDto topicDto = BeanMapper.map(topic, TopicDto.class);
 		Result<TopicDto> result = new Result<TopicDto>();
 		result.setObj(topicDto);
+		return result;
+	}
+	/**
+	 * 回复话题
+	 * @param topicReply
+	 * @return
+	 */
+	@RequestMapping(value = "/reply",method = RequestMethod.POST,produces = MediaTypes.JSON)
+	public Result<TopicReplyDto> reply(@RequestBody TopicReply topicReply){
+		topicReplyService.insert(topicReply);
+		return extractedReply(topicReply);
+	}
+	/**
+	 * 删除回复 
+	 * @param replyId
+	 * @return
+	 */
+	@RequestMapping(value = "/reply/{replyId}",method = RequestMethod.DELETE,consumes = MediaTypes.JSON_UTF_8)
+	public String deleteReply(@PathVariable String replyId){
+		topicReplyService.deleteReply(replyId);
+		return "{\"code\" : 1}";
+	}
+	
+	/**
+	 * 跟帖
+	 * @param topicReply
+	 * @return
+	 */
+	@RequestMapping(value = "/reply/follow",method = RequestMethod.POST,produces = MediaTypes.JSON)
+	public Result<TopicReplyDto> replyFollow(@RequestBody TopicReply topicReply){
+		topicReplyService.insert(topicReply);
+		return extractedReply(topicReply);
+	}
+	
+	private Result<TopicReplyDto> extractedReply(TopicReply topicReply) {
+		TopicReplyDto topicReplyDto = BeanMapper.map(topicReply, TopicReplyDto.class);
+		Result<TopicReplyDto> result = new Result<TopicReplyDto>();
+		result.setObj(topicReplyDto);
 		return result;
 	}
 }
