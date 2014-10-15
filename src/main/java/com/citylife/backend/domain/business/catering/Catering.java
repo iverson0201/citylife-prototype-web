@@ -1,6 +1,5 @@
 package com.citylife.backend.domain.business.catering;
 
-import com.citylife.backend.domain.Base;
 import com.citylife.backend.domain.business.Business;
 
 /**
@@ -8,9 +7,8 @@ import com.citylife.backend.domain.business.Business;
  * @version 创建时间：2014年10月14日 下午4:46:45
  * 餐饮
  */
-public class Catering extends Base{
+public class Catering extends Business{
 
-	private Business business;
 	private Boolean booking;
 	private Boolean childSeat;
 	private Boolean parking;
@@ -18,12 +16,7 @@ public class Catering extends Base{
 	private Menu menu;
 	private Double perCapitaConsumption;
 	private Boolean wifi;
-	public Business getBusiness() {
-		return business;
-	}
-	public void setBusiness(Business business) {
-		this.business = business;
-	}
+	
 	public Boolean getBooking() {
 		return booking;
 	}

@@ -1,6 +1,5 @@
 package com.citylife.backend.domain.business.shopping;
 
-import com.citylife.backend.domain.Base;
 import com.citylife.backend.domain.business.Business;
 
 /**
@@ -8,18 +7,11 @@ import com.citylife.backend.domain.business.Business;
  * @version 创建时间：2014年10月14日 下午4:46:54
  * 购物
  */
-public class Shopping extends Base{
+public class Shopping extends Business{
 
-	private Business business;
 	private Boolean tryOn;
 	private String online;
 	private String salesProduct;
-	public Business getBusiness() {
-		return business;
-	}
-	public void setBusiness(Business business) {
-		this.business = business;
-	}
 	public Boolean getTryOn() {
 		return tryOn;
 	}

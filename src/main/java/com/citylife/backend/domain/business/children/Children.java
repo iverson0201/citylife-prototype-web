@@ -1,6 +1,5 @@
 package com.citylife.backend.domain.business.children;
 
-import com.citylife.backend.domain.Base;
 import com.citylife.backend.domain.business.Business;
 
 /**
@@ -8,16 +7,6 @@ import com.citylife.backend.domain.business.Business;
  * @version 创建时间：2014年10月14日 下午4:49:42
  * 儿童
  */
-public class Children  extends Base{
+public class Children extends Business{
 
-	private Business business;
-
-	public Business getBusiness() {
-		return business;
-	}
-
-	public void setBusiness(Business business) {
-		this.business = business;
-	}
-	
 }

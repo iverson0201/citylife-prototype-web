@@ -1,6 +1,5 @@
 package com.citylife.backend.domain.business.beanty;
 
-import com.citylife.backend.domain.Base;
 import com.citylife.backend.domain.business.Business;
 
 /**
@@ -8,20 +7,13 @@ import com.citylife.backend.domain.business.Business;
  * @version 创建时间：2014年10月14日 下午4:48:02
  * 丽人
  */
-public class Beauty  extends Base{
+public class Beauty extends Business{
 
-	private Business business;
 	private String service;
 	private Boolean booking;
 	private Boolean childSeat;
 	private Boolean smokingArea;
 	private Double perCapitaConsumption;
-	public Business getBusiness() {
-		return business;
-	}
-	public void setBusiness(Business business) {
-		this.business = business;
-	}
 	public String getService() {
 		return service;
 	}

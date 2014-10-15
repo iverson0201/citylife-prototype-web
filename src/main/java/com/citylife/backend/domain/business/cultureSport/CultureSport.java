@@ -1,6 +1,5 @@
 package com.citylife.backend.domain.business.cultureSport;
 
-import com.citylife.backend.domain.Base;
 import com.citylife.backend.domain.business.Business;
 
 /**
@@ -8,20 +7,13 @@ import com.citylife.backend.domain.business.Business;
  * @version 创建时间：2014年10月14日 下午4:48:57
  * 文体
  */
-public class CultureSport  extends Base{
+public class CultureSport extends Business{
 
-	private Business business;
 	private Boolean booking;
 	private Boolean swimming;
 	private String perCapitaConsumption;
 	private Boolean wifi;
 	private String facilitie;
-	public Business getBusiness() {
-		return business;
-	}
-	public void setBusiness(Business business) {
-		this.business = business;
-	}
 	public Boolean getBooking() {
 		return booking;
 	}
