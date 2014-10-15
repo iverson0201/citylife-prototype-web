@@ -13,6 +13,7 @@ import com.citylife.backend.service.MessageService;
 /**
  * @author 作者 E-mail:xujw0201@gmail.com
  * @version 创建时间：2014年9月23日 下午1:26:33
+ * 短信
  */
 @RestController
 @RequestMapping("/api/v1/message")
