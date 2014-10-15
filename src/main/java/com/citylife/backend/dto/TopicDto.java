@@ -3,6 +3,7 @@ package com.citylife.backend.dto;
 import java.util.Date;
 
 import com.citylife.backend.domain.person.Pubulisher;
+import com.citylife.backend.domain.topic.Address;
 
 /**
  * @author 作者 E-mail:xujw0201@gmail.com
@@ -19,6 +20,10 @@ public class TopicDto {
 	private Pubulisher pubulisher;
 	private Date createdAt;
     private Date updatedAt;
+    
+    private Address address;
+    
+    
 	public String getId() {
 		return id;
 	}
@@ -60,6 +65,12 @@ public class TopicDto {
 	}
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+	public Address getAddress() {
+		return address;
+	}
+	public void setAddress(Address address) {
+		this.address = address;
 	}
     
 }

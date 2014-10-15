@@ -1,5 +1,7 @@
 package com.citylife.backend.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,11 @@ public class TopicServiceImpl implements TopicService {
 	public void deleteTopic(String topicId) {
 		// TODO Auto-generated method stub
 		topicDao.delete2Mongo(topicId);
+	}
+	@Override
+	public List<Topic> getTopics(int size, int page, String sort, String order) {
+		// TODO Auto-generated method stub
+		return topicDao.findTopics(size,page,sort,order);
 	}
 
 }

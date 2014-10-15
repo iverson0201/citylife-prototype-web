@@ -33,6 +33,6 @@ public class MessageController {
 		if(!flag){
 			throw new RestException("短信发送失败。");
 		}
-		return "{\"code\" : 1,\"randomNumber\" : " + randomNumber + "}";
+		return "{\"code\" : 1,\"randomNumber\" : \"" + randomNumber + "\"}";
 	}
 }

@@ -1,5 +1,7 @@
 package com.citylife.backend.service;
 
+import java.util.List;
+
 import com.citylife.backend.domain.topic.Topic;
 
 /**
@@ -15,5 +17,7 @@ public interface TopicService {
 	Topic updateTopic(String id, Topic topic);
 
 	void deleteTopic(String topicId);
+
+	List<Topic> getTopics(int size, int page, String sort, String order);
 
 }

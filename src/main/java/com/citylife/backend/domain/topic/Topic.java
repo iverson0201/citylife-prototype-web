@@ -18,6 +18,8 @@ public class Topic extends Base{
 	/** 发布人 */
 	private Pubulisher pubulisher;
 	
+	private Address address;
+	
 	
 	public String getTitle() {
 		return title;
@@ -42,6 +44,12 @@ public class Topic extends Base{
 	}
 	public void setPubulisher(Pubulisher pubulisher) {
 		this.pubulisher = pubulisher;
+	}
+	public Address getAddress() {
+		return address;
+	}
+	public void setAddress(Address address) {
+		this.address = address;
 	}
 	
 }

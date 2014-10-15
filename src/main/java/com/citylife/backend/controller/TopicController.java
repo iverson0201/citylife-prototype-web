@@ -1,6 +1,7 @@
 package com.citylife.backend.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -8,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.citylife.backend.common.Utils;
@@ -107,15 +110,26 @@ public class TopicController {
 	 * @param replyId
 	 * @return
 	 */
-	@RequestMapping(value = "/reply/{replyId}",method = RequestMethod.DELETE,consumes = MediaTypes.JSON_UTF_8)
+	@RequestMapping(value = "/reply/"
+			+ "{replyId}",method = RequestMethod.DELETE,consumes = MediaTypes.JSON_UTF_8)
 	public String deleteReply(@PathVariable String replyId){
 		topicReplyService.deleteReply(replyId);
 		return "{\"code\" : 1}";
 	}
 	
+	@RequestMapping(value = "/list",method = RequestMethod.GET,consumes = MediaTypes.JSON_UTF_8)
+	public List<Topic> getTopics(
+	@RequestParam(value = "size",required = false,defaultValue = "10") int size,
+	@RequestParam(value = "page",required = false,defaultValue = "1") int page,
+	@RequestParam(value = "sort",required = false,defaultValue = "updateAt") String sort, 
+	@RequestParam(value = "order",required = false,defaultValue = "DESC") String order ){
+		return topicService.getTopics(size,page,sort,order);
+	}
+	
 	/**
 	 * 跟帖
 	 * @param topicReply
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/reply/follow",method = RequestMethod.POST,produces = MediaTypes.JSON)
@@ -129,5 +143,10 @@ public class TopicController {
 		Result<TopicReplyDto> result = new Result<TopicReplyDto>();
 		result.setObj(topicReplyDto);
 		return result;
+	}
+
+	@RequestMapping(value = "/test",method = RequestMethod.GET,consumes = MediaTypes.JSON_UTF_8)
+	public String test(@RequestHeader(value = "nihao") String etag){
+		return etag;
 	}
 }
