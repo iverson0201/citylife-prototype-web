@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import com.citylife.backend.common.Utils;
 import com.citylife.backend.common.mapper.BeanMapper;
 import com.citylife.backend.common.web.MediaTypes;
 import com.citylife.backend.domain.result.Result;
+import com.citylife.backend.domain.result.Results;
 import com.citylife.backend.domain.topic.Topic;
 import com.citylife.backend.domain.topic.TopicReply;
 import com.citylife.backend.dto.TopicDto;
@@ -30,6 +32,7 @@ import com.citylife.backend.service.TopicService;
 /**
  * @author 作者 E-mail:xujw0201@gmail.com
  * @version 创建时间：2014年10月11日 下午4:46:44
+ * 话题
  */
 @RestController
 @RequestMapping("/api/v1/topic")
@@ -116,14 +119,27 @@ public class TopicController {
 		topicReplyService.deleteReply(replyId);
 		return "{\"code\" : 1}";
 	}
-	
+	/**
+	 * 话题列表分页
+	 * @param size
+	 * @param page
+	 * @param sort
+	 * @param order
+	 * @return
+	 */
 	@RequestMapping(value = "/list",method = RequestMethod.GET,consumes = MediaTypes.JSON_UTF_8)
-	public List<Topic> getTopics(
-	@RequestParam(value = "size",required = false,defaultValue = "10") int size,
+	public Results<Topic> getTopics(
+	@RequestParam(value = "size",required = false,defaultValue = "10") Integer size,
 	@RequestParam(value = "page",required = false,defaultValue = "1") int page,
 	@RequestParam(value = "sort",required = false,defaultValue = "updateAt") String sort, 
 	@RequestParam(value = "order",required = false,defaultValue = "DESC") String order ){
-		return topicService.getTopics(size,page,sort,order);
+		Assert.isTrue(page > 0, "Page index must be greater than 0");
+        Assert.isTrue(size > 0, "Size must be greater than 0");
+        Assert.isTrue("DESC".intern() == order.intern() || "ASC".intern() == order.intern(), "The value of order must be 'DESC' or 'ASC'");
+		Results<Topic> results = new Results<Topic>();
+		List<Topic> topics = topicService.getTopics(size,page,sort,order);
+		results.setList(topics);
+        return results;
 	}
 	
 	/**
