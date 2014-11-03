@@ -32,8 +32,17 @@ import com.citylife.backend.dto.ThirdUserDto;
 import com.citylife.backend.dto.UserDto;
 import com.citylife.backend.exception.RestException;
 import com.citylife.backend.exception.NotFoundException;
+import com.citylife.backend.im.comm.Constants;
+import com.citylife.backend.im.comm.HTTPMethod;
+import com.citylife.backend.im.comm.Roles;
+import com.citylife.backend.im.httpclient.utils.HTTPClientUtils;
+import com.citylife.backend.im.httpclient.vo.Credentail;
+import com.citylife.backend.im.httpclient.vo.EndPoints;
+import com.citylife.backend.im.httpclient.vo.UsernamePasswordCredentail;
 import com.citylife.backend.service.SetupEnv;
 import com.citylife.backend.service.UserService;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
@@ -48,6 +57,7 @@ import com.google.common.collect.ImmutableMap;
 class UserController {
 
 	private Logger logger = LoggerFactory.getLogger(UserController.class);
+	private static JsonNodeFactory factory = new JsonNodeFactory(false);
 	
     @Autowired
     private UserService userService;
@@ -65,9 +75,6 @@ class UserController {
         if (results.hasErrors()) {
             throw new IllegalArgumentException(Utils.parseErrors(results.getFieldErrors()));
         }
-        if (userService.findByPhoneNum(user.getTel()) != null) {
-            throw new RestException("用户手机号已存在");
-        }
         setUserDate(user);
         userService.insert(user);
         if (user != null) {
@@ -75,6 +82,12 @@ class UserController {
             response.setHeader(SessionKeys.TOKEN.toString(), (String) sessionObject.get(SessionKeys.TOKEN));
             user.setSession((String) sessionObject.get(SessionKeys.TOKEN));
         }
+        //注册IM用户[单个]，给指定Constants.APPKEY创建一个新的用户
+        ObjectNode objectNode = factory.objectNode();
+		objectNode.put("username", user.getId());
+		objectNode.put("password", user.getPassword());
+		createNewIMUserSingle(objectNode);
+		
         Result<UserDto> result = transformation(user);
     	return result;
 	}
@@ -143,16 +156,9 @@ class UserController {
      * @param user
      * @return
      */
-    @RequestMapping(value ="/{userId}",method = RequestMethod.PUT,consumes = MediaTypes.JSON)
+    @RequestMapping(method = RequestMethod.PUT,consumes = MediaTypes.JSON)
     public Result<UserDto> update(@RequestBody User user){
     	user.setUpdatedAt(new Date());
-    	//QQ或是微信绑定手机号
-    	if(user.getTel() != null){
-    		User u = userService.findByPhoneNum(user.getTel());
-    		if(u != null && user.getTel().intern() == u.getTel().intern()){
-    			throw new RestException("该手机号已存在，不能绑定QQ或是微信。");
-    		}
-    	}
     	User userRet = userService.update(user.getId(), user);
     	Result<UserDto> result = transformation(userRet);
     	return result;
@@ -327,7 +333,7 @@ class UserController {
      * @param thirdId
      * @return
      */
-    @RequestMapping(value = "/{userId}/{type}/{thirdId}",method = RequestMethod.PUT,produces = MediaTypes.JSON_UTF_8)
+    @RequestMapping(value = "/{userId}/{type}/{thirdId}",method = RequestMethod.PUT,consumes = MediaTypes.JSON_UTF_8)
     public Result<UserDto> binding(@PathVariable String userId,@PathVariable Integer type,@PathVariable String thirdId){
     	User userRet = userService.findOne(userId);
     	if(userRet == null){
@@ -367,7 +373,7 @@ class UserController {
      * @param thirdId
      * @return
      */
-    @RequestMapping(value = "/remove/{userId}/{type}/{thirdId}")
+    @RequestMapping(value = "/remove/{userId}/{type}/{thirdId}",method = RequestMethod.PUT,consumes = MediaTypes.JSON)
     public Result<UserDto> unbinding(@PathVariable String userId,@PathVariable Integer type,@PathVariable String thirdId){
     	User userRet = userService.findOne(userId);
     	if(userRet == null){
@@ -390,4 +396,47 @@ class UserController {
     	Result<UserDto> result = transformation(userRet);
     	return result;
     }
+    
+    /**
+	 * 注册IM用户[单个]
+	 * 给指定Constants.APPKEY创建一个新的用户
+	 * @param dataNode
+	 * @return
+	 */
+	public ObjectNode createNewIMUserSingle(ObjectNode dataNode) {
+
+		ObjectNode objectNode = factory.objectNode();
+		// check Constants.APPKEY format
+		if (!HTTPClientUtils.match("^(?!-)[0-9a-zA-Z\\-]+#[0-9a-zA-Z]+", Constants.APPKEY)) {
+			logger.error("Bad format of Constants.APPKEY: " + Constants.APPKEY);
+			objectNode.put("message", "Bad format of Constants.APPKEY");
+			return objectNode;
+		}
+
+		objectNode.removeAll();
+		// check properties that must be provided
+		if (null != dataNode && !dataNode.has("username")) {
+			logger.error("Property that named username must be provided .");
+
+			objectNode.put("message", "Property that named username must be provided .");
+
+			return objectNode;
+		}
+		if (null != dataNode && !dataNode.has("password")) {
+			logger.error("Property that named password must be provided .");
+			objectNode.put("message", "Property that named password must be provided .");
+			return objectNode;
+		}
+
+		try {
+			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
+					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
+			objectNode = HTTPClientUtils.sendHTTPRequest(EndPoints.USERS_URL, credentail, dataNode,
+					HTTPMethod.METHOD_POST);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return objectNode;
+	}
+	
 }
