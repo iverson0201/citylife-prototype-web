@@ -1,5 +1,7 @@
 package com.citylife.backend.dto;
 
+import java.util.Date;
+
 import com.citylife.backend.domain.person.Backer;
 import com.citylife.backend.domain.person.ReplyFollow;
 
@@ -12,14 +14,15 @@ public class TopicReplyDto {
 	private String id;
 	/**回复内容 */
 	private String replyContent;
-	/**图片 */
-	private String[] images;
 	/**回复人 */
 	private Backer backer;
 	/**话题Id */
 	private String topicId;
 	/** 回复给谁，跟随 */
 	private ReplyFollow replyFollow;
+	
+	private Date createdAt;
+	
 	public String getId() {
 		return id;
 	}
@@ -31,12 +34,6 @@ public class TopicReplyDto {
 	}
 	public void setReplyContent(String replyContent) {
 		this.replyContent = replyContent;
-	}
-	public String[] getImages() {
-		return images;
-	}
-	public void setImages(String[] images) {
-		this.images = images;
 	}
 	public Backer getBacker() {
 		return backer;
@@ -55,6 +52,12 @@ public class TopicReplyDto {
 	}
 	public void setReplyFollow(ReplyFollow replyFollow) {
 		this.replyFollow = replyFollow;
+	}
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 	
 }

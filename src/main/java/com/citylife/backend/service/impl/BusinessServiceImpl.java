@@ -9,11 +9,8 @@ import com.citylife.backend.dao.ChildrenDao;
 import com.citylife.backend.dao.CultureSportDao;
 import com.citylife.backend.dao.RecreationDao;
 import com.citylife.backend.dao.ShoppingDao;
-import com.citylife.backend.dao.impl.ChildrenDaoImpl;
-import com.citylife.backend.dao.impl.CultureSportDaoImpl;
+import com.citylife.backend.domain.business.beanty.Beauty;
 import com.citylife.backend.domain.business.catering.Catering;
-import com.citylife.backend.domain.business.children.Children;
-import com.citylife.backend.domain.business.cultureSport.CultureSport;
 import com.citylife.backend.service.BusinessService;
 
 /**
@@ -41,6 +38,20 @@ public class BusinessServiceImpl implements BusinessService {
 	public void createCatering(Catering catering) {
 		// TODO Auto-generated method stub
 		cateringDao.insert2Mongo(catering);
+	}
+
+
+	@Override
+	public Beauty getBeanty(String poiId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public Catering getCatering(String poiId) {
+		// TODO Auto-generated method stub
+		return cateringDao.findByIdFromMongo(poiId);
 	}
 
 }

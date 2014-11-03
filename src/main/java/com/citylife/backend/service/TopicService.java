@@ -20,4 +20,8 @@ public interface TopicService {
 
 	List<Topic> getTopics(int size, int page, String sort, String order);
 
+	Topic getTopicByPraise(String userId);
+
+	Topic getTopic(String topicId, String userId);
+
 }

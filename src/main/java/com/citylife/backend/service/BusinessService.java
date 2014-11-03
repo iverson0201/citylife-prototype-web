@@ -1,5 +1,6 @@
 package com.citylife.backend.service;
 
+import com.citylife.backend.domain.business.beanty.Beauty;
 import com.citylife.backend.domain.business.catering.Catering;
 
 /**
@@ -9,5 +10,9 @@ import com.citylife.backend.domain.business.catering.Catering;
 public interface BusinessService {
 
 	void createCatering(Catering catering);
+
+	Beauty getBeanty(String poiId);
+
+	Catering getCatering(String poiId);
 
 }

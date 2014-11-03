@@ -9,6 +9,7 @@ public class Pubulisher {
 
 	private String userId;
 	private String userName;
+	private String headImage;
 	
 	public String getUserId() {
 		return userId;
@@ -21,6 +22,12 @@ public class Pubulisher {
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+	public String getHeadImage() {
+		return headImage;
+	}
+	public void setHeadImage(String headImage) {
+		this.headImage = headImage;
 	}
 	
 }

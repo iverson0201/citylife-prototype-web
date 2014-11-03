@@ -12,4 +12,8 @@ public interface TopicDao extends BaseDao<Topic, String>{
 
 	List<Topic> findTopics(int size, int page, String sort, String order);
 
+	Topic findTopicPraise(String userId);
+
+	Topic findTopicPraise(String topicId, String userId);
+
 }

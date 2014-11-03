@@ -30,12 +30,10 @@ public class User extends Base {
     private String password;
     
     //角色 1:管理员 2:普通用户
-    @NotNull
-    private Integer role;
+    private Integer role = 2;
    
     //账户状态 0:正常使用 1:停用
-    @NotNull
-    private Integer state;
+    private Integer state = 0;
     @Transient
     private String session;
     //关注

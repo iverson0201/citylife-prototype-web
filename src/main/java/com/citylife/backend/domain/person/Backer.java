@@ -9,7 +9,18 @@ public class Backer {
 
 	private String userId;
 	private String userName;
+	private String headImage;
 	
+	public Backer(String userId, String userName, String headImage) {
+		this.userId = userId;
+		this.userName = userName;
+		this.headImage = headImage;
+	}
+
+	public Backer() {
+	}
+
+
 	public String getUserId() {
 		return userId;
 	}
@@ -21,6 +32,14 @@ public class Backer {
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getHeadImage() {
+		return headImage;
+	}
+
+	public void setHeadImage(String headImage) {
+		this.headImage = headImage;
 	}
 	
 }

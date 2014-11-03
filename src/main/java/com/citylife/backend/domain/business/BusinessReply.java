@@ -12,10 +12,9 @@ import com.citylife.backend.domain.person.ReplyFollow;
 public class BusinessReply extends Base{
 
 	private String content;
-	private String[] images;
 	private Backer backer;
-	private String businessId;
 	private ReplyFollow replyFollow;
+	private String commentId;
 	
 	public String getContent() {
 		return content;
@@ -23,29 +22,23 @@ public class BusinessReply extends Base{
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public String[] getImages() {
-		return images;
-	}
-	public void setImages(String[] images) {
-		this.images = images;
-	}
 	public Backer getBacker() {
 		return backer;
 	}
 	public void setBacker(Backer backer) {
 		this.backer = backer;
 	}
-	public String getBusinessId() {
-		return businessId;
-	}
-	public void setBusinessId(String businessId) {
-		this.businessId = businessId;
-	}
 	public ReplyFollow getReplyFollow() {
 		return replyFollow;
 	}
 	public void setReplyFollow(ReplyFollow replyFollow) {
 		this.replyFollow = replyFollow;
+	}
+	public String getCommentId() {
+		return commentId;
+	}
+	public void setCommentId(String commentId) {
+		this.commentId = commentId;
 	}
 	
 }

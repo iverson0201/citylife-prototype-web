@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.citylife.backend.common.Utils;
 import com.citylife.backend.common.mapper.BeanMapper;
 import com.citylife.backend.common.web.MediaTypes;
+import com.citylife.backend.domain.person.Backer;
+import com.citylife.backend.domain.person.Praise;
 import com.citylife.backend.domain.result.Result;
 import com.citylife.backend.domain.result.Results;
 import com.citylife.backend.domain.topic.Topic;
@@ -60,18 +62,19 @@ public class TopicController {
 		return extracted(topic);
 	}
 	/**
-	 * 获取某个话题详情
+	 *  获取某个话题详情
 	 * @param topicId
 	 * @return
 	 */
 	@RequestMapping(value = "/{topicId}",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
-	public Result<TopicDto> get(@PathVariable String topicId){
+	public Result<TopicDto> detail(@PathVariable String topicId){
 		Topic topic = topicService.getTopic(topicId);
 		if(topic == null){
 			throw new RestException("话题不存在");
 		}
 		return extracted(topic);
 	}
+	
 	/**
 	 * 更新话题信息
 	 * @param topic
@@ -103,9 +106,19 @@ public class TopicController {
 	 * @param topicReply
 	 * @return
 	 */
-	@RequestMapping(value = "/reply",method = RequestMethod.POST,produces = MediaTypes.JSON)
-	public Result<TopicReplyDto> reply(@RequestBody TopicReply topicReply){
+	@RequestMapping(value = "/reply/{topicId}",method = RequestMethod.POST,consumes = MediaTypes.JSON)
+	public Result<TopicReplyDto> reply(@RequestBody TopicReply topicReply,@PathVariable String topicId,BindingResult results){
+		if (results.hasErrors()) {
+            throw new IllegalArgumentException(Utils.parseErrors(results.getFieldErrors()));
+        }
+		Date date = new Date();
+		topicReply.setCreatedAt(date);
+		topicReply.setUpdatedAt(date);
+		topicReply.setTopicId(topicId);
 		topicReplyService.insert(topicReply);
+		Topic topic = topicService.getTopic(topicId);
+		topic.setTopicReplyCount();
+		topicService.updateTopic(topicId, topic);
 		return extractedReply(topicReply);
 	}
 	/**
@@ -113,8 +126,7 @@ public class TopicController {
 	 * @param replyId
 	 * @return
 	 */
-	@RequestMapping(value = "/reply/"
-			+ "{replyId}",method = RequestMethod.DELETE,consumes = MediaTypes.JSON_UTF_8)
+	@RequestMapping(value = "/reply/{replyId}",method = RequestMethod.DELETE,produces = MediaTypes.JSON_UTF_8)
 	public String deleteReply(@PathVariable String replyId){
 		topicReplyService.deleteReply(replyId);
 		return "{\"code\" : 1}";
@@ -127,8 +139,8 @@ public class TopicController {
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/list",method = RequestMethod.GET,consumes = MediaTypes.JSON_UTF_8)
-	public Results<Topic> getTopics(
+	@RequestMapping(value = "/list",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
+	public Results<TopicDto> getTopics(
 	@RequestParam(value = "size",required = false,defaultValue = "10") Integer size,
 	@RequestParam(value = "page",required = false,defaultValue = "1") int page,
 	@RequestParam(value = "sort",required = false,defaultValue = "updateAt") String sort, 
@@ -136,9 +148,10 @@ public class TopicController {
 		Assert.isTrue(page > 0, "Page index must be greater than 0");
         Assert.isTrue(size > 0, "Size must be greater than 0");
         Assert.isTrue("DESC".intern() == order.intern() || "ASC".intern() == order.intern(), "The value of order must be 'DESC' or 'ASC'");
-		Results<Topic> results = new Results<Topic>();
 		List<Topic> topics = topicService.getTopics(size,page,sort,order);
-		results.setList(topics);
+		List<TopicDto> dtos = BeanMapper.mapList(topics, TopicDto.class);
+		Results<TopicDto> results = new Results<TopicDto>();
+		results.setList(dtos);
         return results;
 	}
 	
@@ -148,9 +161,22 @@ public class TopicController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/reply/follow",method = RequestMethod.POST,produces = MediaTypes.JSON)
-	public Result<TopicReplyDto> replyFollow(@RequestBody TopicReply topicReply){
+	@RequestMapping(value = "/follow/{topicId}",method = RequestMethod.POST,consumes = MediaTypes.JSON)
+	public Result<TopicReplyDto> replyFollow(@RequestBody TopicReply topicReply,@PathVariable String topicId,
+			@RequestParam String userId,@RequestParam String userName,@RequestParam String headImage,BindingResult bindingResult){
+		if(bindingResult.hasErrors()){
+			throw new IllegalArgumentException(Utils.parseErrors(bindingResult.getFieldErrors()));
+		}
+		Date date = new Date();
+		topicReply.setCreatedAt(date);
+		topicReply.setUpdatedAt(date);
+		topicReply.setTopicId(topicId);
+		Backer backer = new Backer(userId,userName,headImage);
+		topicReply.setBacker(backer);
 		topicReplyService.insert(topicReply);
+		Topic topic = topicService.getTopic(topicId);
+		topic.setTopicReplyCount();
+		topicService.updateTopic(topicId, topic);
 		return extractedReply(topicReply);
 	}
 	
@@ -159,6 +185,64 @@ public class TopicController {
 		Result<TopicReplyDto> result = new Result<TopicReplyDto>();
 		result.setObj(topicReplyDto);
 		return result;
+	}
+	
+	/**
+	 * 话题点赞 | 取消点赞
+	 * @param topicId
+	 * @param praise
+	 * @param results
+	 * @return
+	 */
+	@RequestMapping(value = "/praise/{topicId}",method = RequestMethod.PUT,consumes = MediaTypes.JSON)
+	public Result<TopicDto> test(@PathVariable String topicId, @RequestBody Praise praise,BindingResult results){
+		if (results.hasErrors()) {
+            throw new IllegalArgumentException(Utils.parseErrors(results.getFieldErrors()));
+        }
+		Topic topic = topicService.getTopic(topicId);
+		boolean flag = false;
+		int i = 0;
+		List<Praise> praises = topic.getPraises();
+		if(praises == null || praises.size() == 0){
+			flag = true;
+		}
+		for(; i <= praises.size() - 1 && !flag; i++){
+			if(praises.get(i).getUserId().intern() == praise.getUserId().intern()){
+				praises.remove(i);
+				i = -1;
+				break;
+			}
+		}
+		if(i > 0){
+			flag = true;
+		}
+		if(flag){
+			praises.add(praise);
+		}
+		topic.setPraises(praises);
+		Topic topicRet = topicService.updateTopic(topicId, topic);
+		return extracted(topicRet);
+	}
+	
+	/**
+	 * 回复列表
+	 * @param topicId
+	 * @param size
+	 * @param page
+	 * @return
+	 */
+	@SuppressWarnings("null")
+	@RequestMapping(value = "/reply/{topicId}",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
+	public Results<TopicReply> replyList(@PathVariable String topicId,
+			@RequestParam(value = "size",required = false,defaultValue = "5") int size,
+			@RequestParam(value = "page",required = false,defaultValue = "1") int page){
+		List<TopicReply> topicReplies = topicReplyService.getTopicReplys(topicId,size,page);
+		if(topicReplies == null && topicReplies.size() == 0){
+			throw new RestException("没有回复");
+		}
+		Results<TopicReply> results = new Results<TopicReply>();
+		results.setList(topicReplies);
+		return results;
 	}
 
 	@RequestMapping(value = "/test",method = RequestMethod.GET,consumes = MediaTypes.JSON_UTF_8)

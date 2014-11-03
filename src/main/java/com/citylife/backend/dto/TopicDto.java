@@ -1,9 +1,15 @@
 package com.citylife.backend.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import org.springframework.data.annotation.Transient;
+
+import com.citylife.backend.domain.person.Praise;
 import com.citylife.backend.domain.person.Pubulisher;
 import com.citylife.backend.domain.topic.Address;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author 作者 E-mail:xujw0201@gmail.com
@@ -22,7 +28,13 @@ public class TopicDto {
     private Date updatedAt;
     
     private Address address;
+
+    private List<Praise> praises = new ArrayList<Praise>();
     
+    @SuppressWarnings("unused")
+	private int praiseCount = 0;
+    
+    private int replyCount = 0;
     
 	public String getId() {
 		return id;
@@ -71,6 +83,26 @@ public class TopicDto {
 	}
 	public void setAddress(Address address) {
 		this.address = address;
+	}
+	@Transient
+	@JsonIgnore
+	public List<Praise> getPraises() {
+		return praises;
+	}
+	public void setPraises(List<Praise> praises) {
+		this.praises = praises;
+	}
+	public int getReplyCount() {
+		return replyCount;
+	}
+	public void setReplyCount(int replyCount) {
+		this.replyCount = replyCount;
+	}
+	public int getPraiseCount() {
+		return praiseCount = praises.size();
+	}
+	public void setPraiseCount(int praiseCount) {
+		this.praiseCount = praiseCount;
 	}
     
 }

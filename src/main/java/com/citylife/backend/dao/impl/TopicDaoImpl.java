@@ -1,17 +1,15 @@
 package com.citylife.backend.dao.impl;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -27,9 +25,6 @@ public class TopicDaoImpl extends BaseDaoImpl<Topic, String> implements TopicDao
 	
 	@Value("#{configs['topic.hot.maxhours']}")
     private Integer topicHotMaxHours;
-	
-	@Resource(name = "mongoTemplate")
-	private MongoTemplate mongoTemplate;
 	
 	@Override
 	public List<Topic> findTopics(int size, int page, String sort, String order) {
@@ -57,6 +52,18 @@ public class TopicDaoImpl extends BaseDaoImpl<Topic, String> implements TopicDao
         c.set(Calendar.HOUR, day - topicHotMaxHours);
         Date time = c.getTime();
 		return time;
+	}
+
+	@Override
+	public Topic findTopicPraise(String userId) {
+		// TODO Auto-generated method stub
+		return mongoTemplate.findOne(query(where("praises.userId").is(userId)), Topic.class);
+	}
+
+	@Override
+	public Topic findTopicPraise(String topicId, String userId) {
+		// TODO Auto-generated method stub
+		return mongoTemplate.findOne(query(where("_id").is(topicId).and("praises.userId").is(userId)), Topic.class);
 	}
 
 }

@@ -1,27 +1,22 @@
 package com.citylife.backend.dao.impl;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Repository;
 
 import com.citylife.backend.dao.UserDao;
 import com.citylife.backend.domain.user.User;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Repository;
-
-import javax.annotation.Resource;
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
-
 @Repository
 public class UserDaoImpl extends BaseDaoImpl<User, String> implements
         UserDao {
-
-    @Resource(name = "mongoTemplate")
-    private MongoTemplate mongoTemplate;
+	
     @Value("#{configs['user.follower.max']}")
     private Integer maxfollowers;
 

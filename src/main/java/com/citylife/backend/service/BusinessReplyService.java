@@ -1,5 +1,8 @@
 package com.citylife.backend.service;
 
+import java.util.List;
+
+import com.citylife.backend.domain.business.BusinessComment;
 import com.citylife.backend.domain.business.BusinessReply;
 
 /**
@@ -9,5 +12,17 @@ import com.citylife.backend.domain.business.BusinessReply;
 public interface BusinessReplyService {
 
 	void insert(BusinessReply businessReply);
+
+	void createComment(BusinessComment businessComment);
+
+	List<BusinessComment> getCommentList(String businessId, int size, int page);
+
+	List<BusinessReply> getReplyList(String commentId, int size, int page);
+
+	BusinessComment getComment(String commentId);
+
+	void updateComment(String commentId, int replyCount);
+
+	List<BusinessComment> getUserCommentList(String userId, int size, int page);
 
 }

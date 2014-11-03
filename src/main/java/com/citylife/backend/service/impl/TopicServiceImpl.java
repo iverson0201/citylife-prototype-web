@@ -43,5 +43,15 @@ public class TopicServiceImpl implements TopicService {
 		// TODO Auto-generated method stub
 		return topicDao.findTopics(size,page,sort,order);
 	}
+	@Override
+	public Topic getTopicByPraise(String userId) {
+		// TODO Auto-generated method stub
+		return topicDao.findTopicPraise(userId);
+	}
+	@Override
+	public Topic getTopic(String topicId, String userId) {
+		// TODO Auto-generated method stub
+		return topicDao.findTopicPraise(topicId,userId);
+	}
 
 }

@@ -47,7 +47,7 @@ public class BaseDaoImpl<T, ID extends Serializable> implements
     }
 
     @Resource(name = "mongoTemplate")
-    private MongoTemplate mongoTemplate;
+	protected MongoTemplate mongoTemplate;
 
     @Override
     public void insert2Mongo(T entity) {

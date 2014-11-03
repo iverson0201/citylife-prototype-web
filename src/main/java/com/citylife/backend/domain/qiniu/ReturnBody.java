@@ -12,7 +12,7 @@ public class ReturnBody {
 	private Integer w;
 	private Integer size;
 	private Integer h;
-	private String hash;
+	private String hash;//客户端判断是否重复上传的凭证，客户端随机生成
 	
 	public String getName() {
 		return name;
