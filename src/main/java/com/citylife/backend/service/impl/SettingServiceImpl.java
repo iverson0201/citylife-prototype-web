@@ -3,7 +3,9 @@ package com.citylife.backend.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.citylife.backend.dao.FeedBackDao;
 import com.citylife.backend.dao.ReportDao;
+import com.citylife.backend.domain.user.FeedBack;
 import com.citylife.backend.domain.user.Report;
 import com.citylife.backend.service.SettingService;
 
@@ -16,11 +18,19 @@ public class SettingServiceImpl implements SettingService {
 
 	@Autowired
 	private ReportDao reportDao;
+	@Autowired
+	private FeedBackDao feedBackDao;
 	
 	@Override
 	public void CreateReport(Report report) {
 		// TODO Auto-generated method stub
 		reportDao.insert2Mongo(report);
+	}
+
+	@Override
+	public void createFeedBack(FeedBack feedBack) {
+		// TODO Auto-generated method stub
+		feedBackDao.insert2Mongo(feedBack);
 	}
 
 }

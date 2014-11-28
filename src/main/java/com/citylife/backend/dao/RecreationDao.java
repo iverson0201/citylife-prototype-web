@@ -1,6 +1,6 @@
 package com.citylife.backend.dao;
 
-import com.citylife.backend.domain.business.recreation.Recreation;
+import com.citylife.backend.domain.poi.recreation.Recreation;
 
 /**
  * @author 作者 E-mail:xujw0201@gmail.com

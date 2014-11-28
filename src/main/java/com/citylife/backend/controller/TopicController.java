@@ -148,7 +148,7 @@ public class TopicController {
 		Assert.isTrue(page > 0, "Page index must be greater than 0");
         Assert.isTrue(size > 0, "Size must be greater than 0");
         Assert.isTrue("DESC".intern() == order.intern() || "ASC".intern() == order.intern(), "The value of order must be 'DESC' or 'ASC'");
-		List<Topic> topics = topicService.getTopics(size,page,sort,order);
+        List<Topic> topics = topicService.getTopics(size,page,sort,order);
 		List<TopicDto> dtos = BeanMapper.mapList(topics, TopicDto.class);
 		Results<TopicDto> results = new Results<TopicDto>();
 		results.setList(dtos);

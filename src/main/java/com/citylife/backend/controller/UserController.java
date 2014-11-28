@@ -6,6 +6,13 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +25,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.citylife.backend.auth.SessionKeys;
-import com.citylife.backend.auth.SessionTokenProvider;
 import com.citylife.backend.common.Utils;
 import com.citylife.backend.common.mapper.BeanMapper;
 import com.citylife.backend.common.web.MediaTypes;
@@ -30,8 +35,8 @@ import com.citylife.backend.domain.user.ThirdUser;
 import com.citylife.backend.domain.user.User;
 import com.citylife.backend.dto.ThirdUserDto;
 import com.citylife.backend.dto.UserDto;
-import com.citylife.backend.exception.RestException;
 import com.citylife.backend.exception.NotFoundException;
+import com.citylife.backend.exception.RestException;
 import com.citylife.backend.im.comm.Constants;
 import com.citylife.backend.im.comm.HTTPMethod;
 import com.citylife.backend.im.comm.Roles;
@@ -39,12 +44,10 @@ import com.citylife.backend.im.httpclient.utils.HTTPClientUtils;
 import com.citylife.backend.im.httpclient.vo.Credentail;
 import com.citylife.backend.im.httpclient.vo.EndPoints;
 import com.citylife.backend.im.httpclient.vo.UsernamePasswordCredentail;
-import com.citylife.backend.service.SetupEnv;
 import com.citylife.backend.service.UserService;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
 
 /**
  * @author 作者 E-mail:xujw0201@gmail.com
@@ -62,6 +65,18 @@ class UserController {
     @Autowired
     private UserService userService;
     
+    @RequestMapping(value = "/test22",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
+    public String test22(){
+    	System.out.println("test2222222");
+    	return "test22";
+    }
+    
+    @RequestMapping(value = "/test33",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
+    public String test33(){
+    	System.out.println("test333333");
+    	return "test33";
+    }
+    
     /**
      * 注册
      * @param user
@@ -78,9 +93,9 @@ class UserController {
         setUserDate(user);
         userService.insert(user);
         if (user != null) {
-            ImmutableMap<SessionKeys, ? extends Object> sessionObject = SessionTokenProvider.getSessionTokenProvider().setSession(SetupEnv.APP_KEY, user.getTel(), user.getPassword());
-            response.setHeader(SessionKeys.TOKEN.toString(), (String) sessionObject.get(SessionKeys.TOKEN));
-            user.setSession((String) sessionObject.get(SessionKeys.TOKEN));
+//            ImmutableMap<SessionKeys, ? extends Object> sessionObject = SessionTokenProvider.getSessionTokenProvider().setSession(SetupEnv.APP_KEY, user.getTel(), user.getPassword());
+//            response.setHeader(SessionKeys.TOKEN.toString(), (String) sessionObject.get(SessionKeys.TOKEN));
+//            user.setSession((String) sessionObject.get(SessionKeys.TOKEN));
         }
         //注册IM用户[单个]，给指定Constants.APPKEY创建一个新的用户
         ObjectNode objectNode = factory.objectNode();
@@ -112,9 +127,32 @@ class UserController {
         	if(1 == loginUser.getState()){
         		throw new NotFoundException("该用户已被停用!");
         	}else{
-        		ImmutableMap<SessionKeys, ? extends Object> sessionObject = SessionTokenProvider.getSessionTokenProvider().setSession(SetupEnv.APP_KEY, user.getTel(), user.getPassword());
-                response.setHeader(SessionKeys.TOKEN.toString(), (String) sessionObject.get(SessionKeys.TOKEN));
-                loginUser.setSession((String) sessionObject.get(SessionKeys.TOKEN));
+        		//创建用户名和密码的令牌  
+//        		UsernamePasswordToken token = new UsernamePasswordToken(loginUser.getTel(),user.getPassword());  
+        		UsernamePasswordToken token = new UsernamePasswordToken();
+        		token.setUsername(user.getTel());  
+        	    token.setPassword(user.getPassword().toCharArray());  
+        		//记录该令牌，如果不记录则类似购物车功能不能使用。  
+        		token.setRememberMe(true);  
+        		//subject理解成权限对象。类似user  
+        		Subject subject = SecurityUtils.getSubject();  
+        		try {  
+        		subject.login(token);  
+        		} catch (UnknownAccountException ex) {//用户名没有找到。  
+        			ex.printStackTrace();
+        			throw new RestException("用户名没有找到。");
+        		} catch (IncorrectCredentialsException ex) {//用户名密码不匹配。
+        			ex.printStackTrace();
+        			throw new RestException("用户名密码不匹配。");
+        		}catch (AuthenticationException e) {//其他的登录错误  
+        			e.printStackTrace();
+        			throw new RestException("其他的登录错误");
+        		}  
+        		//验证是否成功登录的方法  
+        		if (subject.isAuthenticated()) {  
+        			Session session = subject.getSession();
+        			System.out.println(session);
+        		} 
         	}
             
         } else {
@@ -437,6 +475,27 @@ class UserController {
 			e.printStackTrace();
 		}
 		return objectNode;
+	}
+	/**
+	 * 修改密码
+	 * @param userId
+	 * @param newpassword
+	 * @param oldpassword
+	 * @return
+	 */
+	@RequestMapping(value = "/update/{userId}/{newpassword}/{oldpassword}",method = RequestMethod.PUT,consumes = MediaTypes.JSON)
+	public Result<UserDto> updatePwd(@PathVariable String userId,@PathVariable String newpassword,@PathVariable String oldpassword){
+		User userRet = userService.findOne(userId);
+		if(userRet == null){
+			throw new RestException("账号不存在。");
+		}else if(!userRet.getPassword().equals(oldpassword)){
+			throw new RestException("旧密码不对，请重新输入旧密码。");
+		}else{
+			userRet.setPassword(newpassword);
+			userService.update(userId, userRet);
+		}
+		Result<UserDto> result = transformation(userRet);
+    	return result;
 	}
 	
 }

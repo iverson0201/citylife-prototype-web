@@ -106,7 +106,6 @@ public class IMMessages {
 			dataNode.put("msg", msg);
 			dataNode.put("from", from);
 			dataNode.put("ext", ext);
-			
 			Credentail credentail = new UsernamePasswordCredentail(Constants.APP_ADMIN_USERNAME,
 					Constants.APP_ADMIN_PASSWORD, Roles.USER_ROLE_APPADMIN);
 
@@ -130,18 +129,4 @@ public class IMMessages {
 		return objectNode;
 	}
 
-	public static void main(String[] args) {
-		String targetType = "users";
-		ArrayNode target = factory.arrayNode();
-		target.add("test2");
-		ObjectNode msg = factory.objectNode();
-		msg.put("type", "txt");
-		msg.put("msg", "谢谢啊！哦，对了，是你了？");
-		String from = "test1";
-		ObjectNode ext = factory.objectNode();
-		ext.put("attr1", "attr1v1");
-		ext.put("attr2", "attr2v1");
-		sendMessages(targetType, target, msg, from, ext);
-
-	}
 }

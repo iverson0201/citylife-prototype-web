@@ -3,7 +3,7 @@ package com.citylife.backend.dao.impl;
 import org.springframework.stereotype.Repository;
 
 import com.citylife.backend.dao.BeautyDao;
-import com.citylife.backend.domain.business.beanty.Beauty;
+import com.citylife.backend.domain.poi.beanty.Beauty;
 
 /**
  * @author 作者 E-mail:xujw0201@gmail.com

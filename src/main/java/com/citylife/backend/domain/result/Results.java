@@ -13,6 +13,7 @@ public class Results<T> {
 	@SuppressWarnings("unused")
 	private Integer code;
 	private List<T> list;
+	private long total;
 	
 	public Integer getCode() {
 		return 1;
@@ -25,6 +26,12 @@ public class Results<T> {
 	}
 	public void setList(List<T> list) {
 		this.list = list;
+	}
+	public long getTotal() {
+		return total;
+	}
+	public void setTotal(long total) {
+		this.total = total;
 	}
 	
 }

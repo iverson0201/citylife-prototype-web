@@ -1,5 +1,6 @@
 package com.citylife.backend.service;
 
+import com.citylife.backend.domain.user.FeedBack;
 import com.citylife.backend.domain.user.Report;
 
 /**
@@ -9,5 +10,7 @@ import com.citylife.backend.domain.user.Report;
 public interface SettingService {
 
 	void CreateReport(Report report);
+
+	void createFeedBack(FeedBack feedBack);
 
 }

@@ -168,4 +168,11 @@ public class User extends Base {
 		}
 		return null;
 	}
+
+	public User(String tel, String password) {
+		super();
+		this.tel = tel;
+		this.password = password;
+	}
+
 }

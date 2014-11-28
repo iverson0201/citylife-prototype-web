@@ -7,7 +7,6 @@ import javax.xml.bind.ValidationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,7 +31,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             ValidationException.class,
             NotFoundException.class,
             NotImplementedException.class,
-            AuthenticationException.class,
             OperateFailedException.class,
             NotAuthException.class,
             ParseException.class,
@@ -61,11 +59,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         else if (ex instanceof OperateFailedException) {
             HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
             return handleException((OperateFailedException) ex, headers, status, request);
-        }
-        else if (ex instanceof AuthenticationException) {
-            HttpStatus status = HttpStatus.NETWORK_AUTHENTICATION_REQUIRED;
-            return handleException((AuthenticationException) ex, headers, status, request);
-        } else if (ex instanceof NotAuthException) {
+        }else if (ex instanceof NotAuthException) {
             HttpStatus status = HttpStatus.NETWORK_AUTHENTICATION_REQUIRED;
             return handleException((NotAuthException) ex, headers, status, request);
         } else if (ex instanceof ParseException) {

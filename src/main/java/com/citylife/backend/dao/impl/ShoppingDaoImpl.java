@@ -3,7 +3,7 @@ package com.citylife.backend.dao.impl;
 import org.springframework.stereotype.Repository;
 
 import com.citylife.backend.dao.ShoppingDao;
-import com.citylife.backend.domain.business.shopping.Shopping;
+import com.citylife.backend.domain.poi.shopping.Shopping;
 
 /**
  * @author 作者 E-mail:xujw0201@gmail.com
