@@ -20,6 +20,7 @@ public class PoiComment extends Base{
 	private String address;
 	private String[] marks;
 	private int replyCount;
+	private double perCapita;
 	
 	public String getContent() {
 		return content;
@@ -80,5 +81,11 @@ public class PoiComment extends Base{
 	}
 	public void setPoiImage(String poiImage) {
 		this.poiImage = poiImage;
+	}
+	public double getPerCapita() {
+		return perCapita;
+	}
+	public void setPerCapita(double perCapita) {
+		this.perCapita = perCapita;
 	}
 }

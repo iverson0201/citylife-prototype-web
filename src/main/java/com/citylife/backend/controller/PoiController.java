@@ -12,18 +12,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.citylife.backend.common.Constant;
 import com.citylife.backend.common.Utils;
 import com.citylife.backend.common.mapper.BeanMapper;
 import com.citylife.backend.common.web.MediaTypes;
 import com.citylife.backend.domain.person.Backer;
 import com.citylife.backend.domain.poi.Poi;
 import com.citylife.backend.domain.poi.PoiComment;
+import com.citylife.backend.domain.poi.PoiInfo;
 import com.citylife.backend.domain.poi.PoiReply;
-import com.citylife.backend.domain.poi.catering.Catering;
 import com.citylife.backend.domain.result.Result;
 import com.citylife.backend.domain.result.Results;
 import com.citylife.backend.dto.PoiCommentDto;
-import com.citylife.backend.dto.PoiDto;
+import com.citylife.backend.dto.PoiInfoDto;
+import com.citylife.backend.exception.RestException;
 import com.citylife.backend.service.PoiReplyService;
 import com.citylife.backend.service.PoiService;
 
@@ -42,6 +44,23 @@ public class PoiController {
 	private PoiReplyService poiReplyService;
 	
 	/**
+	 * 创建PoiInfo信息
+	 * @param catering
+	 * @return
+	 */
+	@RequestMapping(value = "/insert",method = RequestMethod.POST,consumes = MediaTypes.JSON)
+	public PoiInfo insert(@RequestBody PoiInfo poiInfo){
+		boolean flag = poiService.findPoiInfoByPoiId(poiInfo.getPoiId());
+		if(flag)
+			throw new RestException(Constant.POI_EXIST);
+		Date date = new Date();
+		poiInfo.setCreatedAt(date);
+		poiInfo.setUpdatedAt(date);
+		poiService.insertPoiInfo(poiInfo);
+		return poiInfo;
+	}
+	
+	/**
 	 * 创建POI信息
 	 * @param catering
 	 * @return
@@ -55,19 +74,7 @@ public class PoiController {
 		return poi;
 	}
 	
-	/**
-	 * 创建餐饮信息
-	 * @param catering
-	 * @return
-	 */
-	@RequestMapping(value = "/catering",method = RequestMethod.POST,consumes = MediaTypes.JSON)
-	public Catering createCatering(@RequestBody Catering catering){
-		Date date = new Date();
-		catering.setCreatedAt(date);
-		catering.setUpdatedAt(date);
-		poiService.createCatering(catering);
-		return catering;
-	}
+
 	/**
 	 * 商家评论，点评
 	 * @param poiComment
@@ -89,32 +96,21 @@ public class PoiController {
 	}
 	/**
 	 * 商家详情 （商家首页）
-	 * 根据poi的id和类别编码查找商家信息
+	 * 根据poiId查找商家信息
 	 * @param poiId
 	 * @param type
 	 * @return
 	 */
-	@RequestMapping(value = "/{code}/{poiId}",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
-	public Result<PoiDto> get(@PathVariable String poiId,@PathVariable String code){
+	@RequestMapping(value = "/detail/{poiId}",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
+	public Result<PoiInfoDto> get(@PathVariable String poiId){
 		Poi poi = poiService.getPoi(poiId);
-		Object obj = getPoi(code,poiId);
-		Result<PoiDto> result = new Result<PoiDto>();
-		PoiDto poiDto = new PoiDto();
-		poiDto.setPoi(poi);
-		poiDto.setDetails(obj);
-		result.setObj(poiDto);
+		PoiInfo poiInfo = poiService.getPoiInfo(poiId);
+		PoiInfoDto poiInfoDto = new PoiInfoDto(poi, poiInfo);
+		Result<PoiInfoDto> result = new Result<PoiInfoDto>();
+		result.setObj(poiInfoDto);
 		return result;
 	}
-	
-	private Object getPoi(String code, String poiId) {
-		// TODO Auto-generated method stub
-		if(code.equals("lr001")){
-			return poiService.getBeanty(poiId);
-		}else if(code.equals("cy001")){
-			return poiService.getCatering(poiId);
-		}
-		return null;
-	}
+
 	/**
 	 * 回复评论
 	 * @param poiReply

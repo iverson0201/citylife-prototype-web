@@ -64,8 +64,6 @@
         <property name="writeResultChecking" value="EXCEPTION"/>
     </bean>
 
-    <bean id="setup" class="com.citylife.backend.service.SetupEnv">
-    </bean>
 
     <!-- enable autowire -->
     <context:annotation-config />

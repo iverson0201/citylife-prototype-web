@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.citylife.backend.common.Constant;
 import com.citylife.backend.common.Utils;
 import com.citylife.backend.common.web.MediaTypes;
 import com.citylife.backend.domain.user.User;
@@ -36,12 +37,12 @@ public class MessageController {
 	@RequestMapping(value = "/{phone}",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
 	public String identifyingCode(@PathVariable String phone){
 		if (userService.findByPhoneNum(phone) != null) {
-            throw new RestException("用户手机号已存在");
+            throw new RestException(Constant.EXIST_PHONE);
         }
 		int randomNumber = Utils.randomNumber();
 		Boolean flag = messageService.sendShortMessage(phone,randomNumber);
 		if(!flag){
-			throw new RestException("短信发送失败。");
+			throw new RestException(Constant.MSG_FAILED);
 		}
 		return "{\"code\" : 1,\"randomNumber\" : \"" + randomNumber + "\"}";
 	}
@@ -54,12 +55,12 @@ public class MessageController {
 	public String reset(@PathVariable String phone){
 		User user = userService.findByPhoneNum(phone);
 		if(user == null){
-			throw new RestException("用户不存在");
+			throw new RestException(Constant.ACCOUNT_NOT_EXIST);
 		}
 		int randomNumber = Utils.randomNumber();
 		Boolean flag = messageService.sendShortMessage(phone,randomNumber);
 		if(!flag){
-			throw new RestException("短信发送失败。");
+			throw new RestException(Constant.MSG_FAILED);
 		}
 		return "{\"code\" : 1,\"userId\" : \"" + user.getId() + "\",\"randomNumber\" : \"" + randomNumber + "\"}";
 	}

@@ -1,8 +1,7 @@
 package com.citylife.backend.service;
 
 import com.citylife.backend.domain.poi.Poi;
-import com.citylife.backend.domain.poi.beanty.Beauty;
-import com.citylife.backend.domain.poi.catering.Catering;
+import com.citylife.backend.domain.poi.PoiInfo;
 
 /**
  * @author 作者 E-mail:xujw0201@gmail.com
@@ -10,14 +9,14 @@ import com.citylife.backend.domain.poi.catering.Catering;
  */
 public interface PoiService {
 
-	void createCatering(Catering catering);
-
-	Beauty getBeanty(String poiId);
-
-	Catering getCatering(String poiId);
-
 	void createPoi(Poi poi);
 
 	Poi getPoi(String poiId);
+
+	void insertPoiInfo(PoiInfo poiInfo);
+
+	boolean findPoiInfoByPoiId(String poiId);
+
+	PoiInfo getPoiInfo(String poiId);
 
 }

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.citylife.backend.common.Constant;
 import com.citylife.backend.common.Utils;
 import com.citylife.backend.common.mapper.BeanMapper;
 import com.citylife.backend.common.web.MediaTypes;
@@ -65,17 +66,6 @@ class UserController {
     @Autowired
     private UserService userService;
     
-    @RequestMapping(value = "/test22",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
-    public String test22(){
-    	System.out.println("test2222222");
-    	return "test22";
-    }
-    
-    @RequestMapping(value = "/test33",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
-    public String test33(){
-    	System.out.println("test333333");
-    	return "test33";
-    }
     
     /**
      * 注册
@@ -93,9 +83,26 @@ class UserController {
         setUserDate(user);
         userService.insert(user);
         if (user != null) {
-//            ImmutableMap<SessionKeys, ? extends Object> sessionObject = SessionTokenProvider.getSessionTokenProvider().setSession(SetupEnv.APP_KEY, user.getTel(), user.getPassword());
-//            response.setHeader(SessionKeys.TOKEN.toString(), (String) sessionObject.get(SessionKeys.TOKEN));
-//            user.setSession((String) sessionObject.get(SessionKeys.TOKEN));
+        	//创建用户名和密码的令牌  
+    		UsernamePasswordToken token = new UsernamePasswordToken();
+    		token.setUsername(user.getTel());  
+    	    token.setPassword(user.getPassword().toCharArray());  
+    		//记录该令牌，如果不记录则类似购物车功能不能使用。  
+    		token.setRememberMe(true);  
+    		//subject理解成权限对象。类似user  
+    		Subject subject = SecurityUtils.getSubject();  
+    		try {  
+    		subject.login(token);  
+    		} catch (UnknownAccountException ex) {//用户不存在。
+    			ex.printStackTrace();
+    			throw new RestException(Constant.ACCOUNT_NOT_EXIST);
+    		} catch (IncorrectCredentialsException ex) {//用户名密码不匹配。
+    			ex.printStackTrace();
+    			throw new RestException(Constant.NAME_PWD_NOT_MATCH);
+    		}catch (AuthenticationException e) {//其他的登录错误  
+    			e.printStackTrace();
+    			throw new RestException(Constant.OTHER_LOGIN_ERROR);
+    		}  
         }
         //注册IM用户[单个]，给指定Constants.APPKEY创建一个新的用户
         ObjectNode objectNode = factory.objectNode();
@@ -120,15 +127,14 @@ class UserController {
     @RequestMapping(value ="/login", method = RequestMethod.POST)
     public Result<UserDto> login(@RequestBody User user, HttpServletResponse response) {
         if (Strings.isNullOrEmpty(user.getTel()) || Strings.isNullOrEmpty(user.getPassword())) {
-            throw new IllegalArgumentException("用户信息不完整");
+            throw new IllegalArgumentException(Constant.USER_NOT_COMPLETE);
         }
         User loginUser = userService.login(user);
         if (loginUser != null) {
         	if(1 == loginUser.getState()){
-        		throw new NotFoundException("该用户已被停用!");
+        		throw new NotFoundException(Constant.USER_DISABLED);
         	}else{
         		//创建用户名和密码的令牌  
-//        		UsernamePasswordToken token = new UsernamePasswordToken(loginUser.getTel(),user.getPassword());  
         		UsernamePasswordToken token = new UsernamePasswordToken();
         		token.setUsername(user.getTel());  
         	    token.setPassword(user.getPassword().toCharArray());  
@@ -138,25 +144,25 @@ class UserController {
         		Subject subject = SecurityUtils.getSubject();  
         		try {  
         		subject.login(token);  
-        		} catch (UnknownAccountException ex) {//用户名没有找到。  
+        		} catch (UnknownAccountException ex) {//用户不存在。
         			ex.printStackTrace();
-        			throw new RestException("用户名没有找到。");
+        			throw new RestException(Constant.ACCOUNT_NOT_EXIST);
         		} catch (IncorrectCredentialsException ex) {//用户名密码不匹配。
         			ex.printStackTrace();
-        			throw new RestException("用户名密码不匹配。");
+        			throw new RestException(Constant.NAME_PWD_NOT_MATCH);
         		}catch (AuthenticationException e) {//其他的登录错误  
         			e.printStackTrace();
-        			throw new RestException("其他的登录错误");
+        			throw new RestException(Constant.OTHER_LOGIN_ERROR);
         		}  
         		//验证是否成功登录的方法  
-        		if (subject.isAuthenticated()) {  
+        		if (subject.isAuthenticated()) { 
         			Session session = subject.getSession();
-        			System.out.println(session);
+        			System.out.println(session.getId());
         		} 
         	}
             
         } else {
-            throw new NotFoundException("用户不存在或密码不正确");
+            throw new NotFoundException(Constant.NAME_PWD_NOT_MATCH);
         }
         Result<UserDto> result = transformation(loginUser);
     	return result;
@@ -170,9 +176,8 @@ class UserController {
     public Result<UserDto> get(@PathVariable String userId){
     	User user = userService.findOne(userId);
     	if(user == null){
-    		String message = "用户不存在(id:" + userId + ")";
-			logger.warn(message);
-			throw new RestException(message);
+			logger.warn(Constant.ACCOUNT_NOT_EXIST);
+			throw new RestException(Constant.ACCOUNT_NOT_EXIST);
     	}
     	// 使用Dozer转换DTO类，并补充Dozer不能自动绑定的属性
 		Result<UserDto> result = transformation(user);
@@ -375,26 +380,26 @@ class UserController {
     public Result<UserDto> binding(@PathVariable String userId,@PathVariable Integer type,@PathVariable String thirdId){
     	User userRet = userService.findOne(userId);
     	if(userRet == null){
-    		throw new RestException("账号不存在。");
+    		throw new RestException(Constant.ACCOUNT_NOT_EXIST);
     	}
     	List<ThirdUser> thirdUsers = userRet.getThirdUsers();
     	//QQ或是微信绑定手机号
     	if(type == 0 && thirdId != null){
     		User u = userService.findByPhoneNum(thirdId);
     		if(u != null && thirdId.intern() == u.getTel().intern()){
-    			throw new RestException("该手机号已存在，不能绑定QQ或是微信。");
+    			throw new RestException(Constant.PHONE_ALREADY_EXISTS);
     		}
     		userRet.setTel(thirdId);
     	}else if(type > 0 && thirdId != null){
     		if(thirdUsers == null){
-    			throw new RestException("绑定失败。");
+    			throw new RestException(Constant.BIND_FAILD);
     		}
     		for(int i = 0 ; i <= thirdUsers.size()-1; i++){
     			if(thirdUsers.get(i).getThirdType() == type){
-    				throw new RestException("该账号已绑定" + userRet.typeStr(type) + "，不能绑定多个。");
+    				throw new RestException(Constant.NOT_BIND_MORE);
     			}
     			if(thirdUsers.get(i).getThirdId().intern() == thirdId.intern()){
-    				throw new RestException("该账号已绑定，不能重复绑定。");
+    				throw new RestException(Constant.EXIST_BIND_USER);
     			}
     		}
     		ThirdUser thirdUser = new ThirdUser(thirdId,type);

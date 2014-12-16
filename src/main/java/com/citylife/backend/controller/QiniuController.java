@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.citylife.backend.common.Constant;
 import com.citylife.backend.common.mapper.JsonMapper;
 import com.citylife.backend.common.web.MediaTypes;
 import com.citylife.backend.domain.qiniu.Qiniu;
@@ -75,9 +76,9 @@ public class QiniuController {
 				qiniuService.save(qiniu);
 			}
 		} catch (JSONException e) {
-			throw new RestException("获取uptoken错误，JSONException");
+			throw new RestException(Constant.UPTOKEN_JSON_EXCEPTION);
 		} catch (AuthException e) {
-			throw new RestException("获取uptoken错误，AuthException");
+			throw new RestException(Constant.UPTOKEN_AUTHEXCEPTION);
 		}
 		return new ResultDto(1,uptoken);
 	}
